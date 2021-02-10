@@ -4,16 +4,19 @@ use plasm_primitives::{AccountId, Balance, Signature};
 use plasm_runtime::constants::currency::PLM;
 use plasm_runtime::Block;
 use plasm_runtime::{
-    BabeConfig, BalancesConfig, ContractsConfig, EVMConfig, EthereumConfig, GenesisConfig, StakerStatus,
-    GrandpaConfig, IndicesConfig, PlasmLockdropConfig, PlasmStakingConfig,
+    BalancesConfig, ContractsConfig, EVMConfig, EthereumConfig, GenesisConfig,
+    GrandpaConfig, IndicesConfig, PlasmLockdropConfig,
+    BabeConfig, AuthorityDiscoveryConfig, ImOnlineConfig, StakerStatus, StakingConfig, ElectionsConfig, CouncilConfig,
     SessionConfig, SessionKeys, SudoConfig, SystemConfig, WASM_BINARY,
 };
 use sc_chain_spec::ChainSpecExtension;
 use sc_service::ChainType;
 use serde::{Deserialize, Serialize};
 use sp_consensus_babe::AuthorityId as BabeId;
-use sp_core::{sr25519, Pair, Public, H160, U256};
 use sp_finality_grandpa::AuthorityId as GrandpaId;
+use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
+use sp_authority_discovery::AuthorityId as AuthorityDiscoveryId;
+use sp_core::{sr25519, Pair, Public, H160, U256};
 use sp_runtime::{
     traits::{IdentifyAccount, Verify},
     Perbill,
@@ -76,21 +79,56 @@ where
 }
 
 /// Helper function to generate controller and session key from seed
-pub fn get_authority_keys_from_seed(seed: &str) -> (AccountId, BabeId, GrandpaId) {
-    (
-        get_account_id_from_seed::<sr25519::Public>(seed),
-        get_from_seed::<BabeId>(seed),
-        get_from_seed::<GrandpaId>(seed),
-    )
+pub fn get_authority_keys_from_seed(
+	seed: &str,
+) -> (
+	AccountId,
+	AccountId,
+	GrandpaId,
+	BabeId,
+	ImOnlineId,
+	AuthorityDiscoveryId,
+) {
+	(
+		get_account_id_from_seed::<sr25519::Public>(&format!("{}//stash", seed)),
+		get_account_id_from_seed::<sr25519::Public>(seed),
+		get_from_seed::<GrandpaId>(seed),
+		get_from_seed::<BabeId>(seed),
+		get_from_seed::<ImOnlineId>(seed),
+		get_from_seed::<AuthorityDiscoveryId>(seed),
+	)
 }
 
+/*
 fn session_keys(babe: BabeId, grandpa: GrandpaId) -> SessionKeys {
-    SessionKeys { babe, grandpa }
+    
+    //SessionKeys { babe, grandpa }
+}
+*/
+
+fn session_keys_pos(
+	grandpa: GrandpaId,
+	babe: BabeId,
+	im_online: ImOnlineId,
+	authority_discovery: AuthorityDiscoveryId,
+) -> SessionKeys {
+	SessionKeys {
+		grandpa,
+		babe,
+		im_online,
+		authority_discovery,
+	}
 }
 
 fn testnet_genesis(
-    initial_authorities: Vec<AccountId>,
-    keys: Vec<(AccountId, BabeId, GrandpaId)>,
+    initial_authorities: Vec<(
+		AccountId,
+		AccountId,
+		GrandpaId,
+		BabeId,
+		ImOnlineId,
+		AuthorityDiscoveryId,
+	)>,
     endowed_accounts: Option<Vec<AccountId>>,
     sudo_key: AccountId,
 ) -> GenesisConfig {
@@ -111,14 +149,22 @@ fn testnet_genesis(
         .cloned()
         .map(|acc| (acc, ENDOWMENT))
         .collect();
+    
+        
 
-    make_genesis(initial_authorities, keys, endowed_accounts, sudo_key, true)
+    make_genesis(initial_authorities, endowed_accounts, sudo_key, true)
 }
 
 /// Helper function to create GenesisConfig
 fn make_genesis(
-    initial_authorities: Vec<AccountId>,
-    keys: Vec<(AccountId, BabeId, GrandpaId)>,
+    initial_authorities: Vec<(
+		AccountId,
+		AccountId,
+		GrandpaId,
+		BabeId,
+		ImOnlineId,
+		AuthorityDiscoveryId,
+	)>,
     balances: Vec<(AccountId, Balance)>,
     root_key: AccountId,
     enable_println: bool,
@@ -132,16 +178,6 @@ fn make_genesis(
         }),
         pallet_balances: Some(BalancesConfig { balances }),
         pallet_indices: Some(IndicesConfig { indices: vec![] }),
-        pallet_plasm_staking: Some(PlasmStakingConfig {
-            validator_count: initial_authorities.len() as u32 * 2,
-			minimum_validator_count: initial_authorities.len() as u32,
-			stakers: keys.iter().map(|x| {
-				(x.0.clone(), x.0.clone(), STASH, StakerStatus::Validator)
-			}).collect(),
-			invulnerables: keys.iter().map(|x| x.0.clone()).collect(),
-			slash_reward_fraction: Perbill::from_percent(10),
-			.. Default::default()
-        }),
         pallet_plasm_lockdrop: Some(PlasmLockdropConfig {
             // Alpha2: 0.44698108660714747
             alpha: Perbill::from_parts(446_981_087),
@@ -152,24 +188,6 @@ fn make_genesis(
             // Start from launch for testing purposes
             lockdrop_bounds: (0, 1_000),
             keys: vec![],
-        }),
-        pallet_session: Some(SessionConfig {
-            keys: keys
-                .iter()
-                .map(|x| {
-                    (
-                        x.0.clone(),
-                        x.0.clone(),
-                        session_keys(x.1.clone(), x.2.clone()),
-                    )
-                })
-                .collect::<Vec<_>>(),
-        }),
-        pallet_babe: Some(BabeConfig {
-            authorities: vec![],
-        }),
-        pallet_grandpa: Some(GrandpaConfig {
-            authorities: vec![],
         }),
         pallet_contracts: Some(ContractsConfig {
             current_schedule: pallet_contracts::Schedule {
@@ -195,6 +213,41 @@ fn make_genesis(
         }),
         pallet_ethereum: Some(EthereumConfig {}),
         pallet_sudo: Some(SudoConfig { key: root_key }),
+        // Staking related configs
+        pallet_babe: Some(BabeConfig {
+            authorities: vec![],
+        }),
+        pallet_grandpa: Some(GrandpaConfig {
+            authorities: vec![],
+        }),
+        pallet_authority_discovery: Some(AuthorityDiscoveryConfig { keys: vec![] }),
+		pallet_im_online: Some(ImOnlineConfig { keys: vec![] }),
+		pallet_treasury: Some(Default::default()),
+		pallet_session: Some(SessionConfig {
+			keys: initial_authorities
+				.iter()
+				.map(|x| {
+					(
+						x.0.clone(),
+						x.0.clone(),
+						session_keys_pos(x.2.clone(), x.3.clone(), x.4.clone(), x.5.clone()),
+					)
+				})
+				.collect::<Vec<_>>(),
+		}),
+		pallet_plasm_staking: Some(StakingConfig {
+			validator_count: initial_authorities.len() as u32 * 2,
+			minimum_validator_count: initial_authorities.len() as u32,
+			stakers: initial_authorities
+				.iter()
+				.map(|x| (x.0.clone(), x.1.clone(), STASH, StakerStatus::Validator))
+				.collect(),
+			invulnerables: initial_authorities.iter().map(|x| x.0.clone()).collect(),
+			slash_reward_fraction: Perbill::from_percent(10),
+			..Default::default()
+		}),
+		pallet_elections_phragmen: Some(ElectionsConfig { members: vec![] }),
+		pallet_collective_Instance1: Some(CouncilConfig::default()),
     }
 }
 
@@ -721,7 +774,6 @@ pub fn plasm_config() -> ChainSpec {
 
 fn development_config_genesis() -> GenesisConfig {
     testnet_genesis(
-        vec![get_account_id_from_seed::<sr25519::Public>("Alice")],
         vec![get_authority_keys_from_seed("Alice")],
         None,
         get_account_id_from_seed::<sr25519::Public>("Alice"),
@@ -745,10 +797,6 @@ pub fn development_config() -> ChainSpec {
 
 fn local_testnet_genesis() -> GenesisConfig {
     testnet_genesis(
-        vec![
-            get_account_id_from_seed::<sr25519::Public>("Alice"),
-            get_account_id_from_seed::<sr25519::Public>("Bob"),
-        ],
         vec![
             get_authority_keys_from_seed("Alice"),
             get_authority_keys_from_seed("Bob"),

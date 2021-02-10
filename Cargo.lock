@@ -4119,6 +4119,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-authority-discovery"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "30aa8ea9ca341f036db79662e1e1ef8a7946bd15eeb8eafaed60186cddea703b"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-session",
+ "parity-scale-codec",
+ "serde",
+ "sp-application-crypto",
+ "sp-authority-discovery",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-authorship"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4171,6 +4188,22 @@ dependencies = [
  "frame-system",
  "parity-scale-codec",
  "serde",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-collective"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "43ea2111eeeac7ffc3bf6b3b5ea7d9a60bea8a0fdc5c336f09132cfe19be9fe4"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "serde",
+ "sp-core",
+ "sp-io",
  "sp-runtime",
  "sp-std",
 ]
@@ -4311,6 +4344,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-elections-phragmen"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6eea3cf2f885b0a195bbd3abe47f965112331cae5b8b6a81826681c1a2ee6d68"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "serde",
+ "sp-npos-elections",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-ethereum"
 version = "0.1.0"
 dependencies = [
@@ -4403,6 +4451,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-im-online"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bca8829f5beda7e8bce0d887e3547da9746d71e5e4523acb79d7fc9d823a09d8"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-authorship",
+ "pallet-session",
+ "parity-scale-codec",
+ "serde",
+ "sp-application-crypto",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-staking",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-indices"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4431,6 +4499,22 @@ dependencies = [
  "serde",
  "sp-io",
  "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-offences"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3808652ee7766d6d8a9564407b07bcf1bdfc9b6b1d82365605105737b7a6992f"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-balances",
+ "parity-scale-codec",
+ "serde",
+ "sp-runtime",
+ "sp-staking",
  "sp-std",
 ]
 
@@ -4716,6 +4800,21 @@ dependencies = [
  "parity-scale-codec",
  "serde",
  "sp-api",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-treasury"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "805a91aba6aca050e7a60d3e07070eaa28790d752c2ebbfd5961e1c5c6a95ebd"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-balances",
+ "parity-scale-codec",
+ "serde",
  "sp-runtime",
  "sp-std",
 ]
@@ -5118,6 +5217,7 @@ dependencies = [
  "pallet-dapps-staking",
  "pallet-evm",
  "pallet-finality-tracker",
+ "pallet-im-online",
  "pallet-ovm",
  "pallet-plasm-lockdrop",
  "pallet-transaction-payment",
@@ -5142,6 +5242,7 @@ dependencies = [
  "sc-transaction-pool",
  "serde",
  "serde_json",
+ "sp-authority-discovery",
  "sp-consensus",
  "sp-consensus-babe",
  "sp-core",
@@ -5208,20 +5309,25 @@ dependencies = [
  "frontier-rpc-primitives",
  "hex-literal 0.2.1",
  "lazy_static",
+ "pallet-authority-discovery",
  "pallet-authorship",
  "pallet-babe",
  "pallet-balances",
+ "pallet-collective",
  "pallet-contract-operator",
  "pallet-contracts",
  "pallet-contracts-primitives",
  "pallet-contracts-rpc-runtime-api",
  "pallet-dapps-staking",
+ "pallet-elections-phragmen",
  "pallet-ethereum",
  "pallet-evm",
  "pallet-finality-tracker",
  "pallet-grandpa",
+ "pallet-im-online",
  "pallet-indices",
  "pallet-nicks",
+ "pallet-offences",
  "pallet-operator-trading",
  "pallet-ovm",
  "pallet-plasm-lockdrop",
@@ -5233,11 +5339,13 @@ dependencies = [
  "pallet-timestamp",
  "pallet-transaction-payment",
  "pallet-transaction-payment-rpc-runtime-api",
+ "pallet-treasury",
  "pallet-utility",
  "parity-scale-codec",
  "plasm-primitives",
  "serde",
  "sp-api",
+ "sp-authority-discovery",
  "sp-block-builder",
  "sp-consensus-babe",
  "sp-core",
@@ -5247,6 +5355,7 @@ dependencies = [
  "sp-runtime",
  "sp-runtime-interface",
  "sp-session",
+ "sp-staking",
  "sp-std",
  "sp-transaction-pool",
  "sp-version",
@@ -7386,6 +7495,19 @@ dependencies = [
  "parity-scale-codec",
  "serde",
  "sp-debug-derive",
+ "sp-std",
+]
+
+[[package]]
+name = "sp-authority-discovery"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bc36db170dcd8c23c9f63238bbce148a541f2fb8bba548544ee840c71310f1d4"
+dependencies = [
+ "parity-scale-codec",
+ "sp-api",
+ "sp-application-crypto",
+ "sp-runtime",
  "sp-std",
 ]
 

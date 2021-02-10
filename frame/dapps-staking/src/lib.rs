@@ -9,7 +9,7 @@ use frame_support::{
     dispatch::DispatchResult,
     ensure,
     traits::{
-        Currency, Get, Imbalance, LockIdentifier, LockableCurrency, OnUnbalanced, Time,
+        Currency, Get, Imbalance, LockIdentifier, LockableCurrency, OnUnbalanced, UnixTime,
         WithdrawReasons,
     },
     weights::Weight,
@@ -42,7 +42,6 @@ pub use sp_staking::SessionIndex;
 
 pub type BalanceOf<T> =
     <<T as Trait>::Currency as Currency<<T as system::Trait>::AccountId>>::Balance;
-pub type MomentOf<T> = <<T as Trait>::Time as Time>::Moment;
 
 type PositiveImbalanceOf<T> =
     <<T as Trait>::Currency as Currency<<T as system::Trait>::AccountId>>::PositiveImbalance;
@@ -231,7 +230,7 @@ pub trait Trait: pallet_session::Trait {
     //type SlashCancelOrigin: EnsureOrigin<Self::Origin>;
 
     /// Time used for computing era duration.
-    type Time: Time;
+    type UnixTime: UnixTime;
 
     type ComputeRewardsForDapps: ComputeRewardsForDapps;
 

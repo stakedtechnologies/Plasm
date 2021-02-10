@@ -18,7 +18,6 @@ sp-core = { version = "2.0.0", default-features = false }
 sp-io = { version = "2.0.0", default-features = false }
 sp-runtime = { version = "2.0.0", default-features = false }
 sp-runtime-interface = { version = "2.0.0", default-features = false }
-sp-consensus-babe = { version = "0.8.0", default-features = false }
 sp-offchain = { version = "2.0.0", default-features = false }
 sp-api = { version = "2.0.0", default-features = false }
 sp-inherents = { version = "2.0.0", default-features = false }
@@ -32,14 +31,11 @@ sp-session = { version = "2.0.0", default-features = false }
 pallet-contract-operator = { path = "../../../frame/operator", default-features = false }
 pallet-operator-trading = { path = "../../../frame/trading", default-features = false }
 pallet-dapps-staking = { path = "../../../frame/dapps-staking", default-features = false }
-pallet-plasm-staking = { path = "../../../frame/plasm-staking", default-features = false }
 pallet-plasm-lockdrop = { path = "../../../frame/plasm-lockdrop", default-features = false }
 pallet-ovm = { path = "../../../frame/ovm", default-features = false }
 pallet-plasma = { path = "../../../frame/plasma", default-features = false }
 pallet-evm = { path = "../../../vendor/frontier/frame/evm", default-features = false }
 frame-executive = { version = "2.0.0", default-features = false }
-pallet-authorship = { version = "2.0.0", default-features = false }
-pallet-babe = { version = "2.0.0", default-features = false }
 pallet-balances = { version = "2.0.0", default-features = false }
 pallet-contracts = { version = "2.0.0", default-features = false }
 pallet-contracts-primitives = { version = "2.0.0", default-features = false }
@@ -49,7 +45,6 @@ pallet-grandpa = { version = "2.0.0", default-features = false }
 pallet-indices = { version = "2.0.0", default-features = false }
 pallet-nicks = { version = "2.0.0", default-features = false }
 pallet-randomness-collective-flip = { version = "2.0.0", default-features = false }
-pallet-session = { version = "2.0.0", default-features = false, features = ["historical"] }
 pallet-sudo = { version = "2.0.0", default-features = false }
 frame-support = { version = "2.0.0", default-features = false }
 frame-system = { version = "2.0.0", default-features = false }
@@ -60,6 +55,21 @@ pallet-transaction-payment-rpc-runtime-api = { version = "2.0.0", default-featur
 pallet-utility = { version = "2.0.0", default-features = false }
 frontier-rpc-primitives = { path = "../../../vendor/frontier/rpc/primitives", default-features = false }
 pallet-ethereum = { path = "../../../vendor/frontier/frame/ethereum", default-features = false }
+
+# Staking dependencies
+pallet-authority-discovery = {default-features = false, version = '2.0.0'}
+pallet-authorship = {default-features = false, version = '2.0.0'}
+pallet-babe = {default-features = false, version = '2.0.0'}
+pallet-collective = {default-features = false, version = '2.0.0'}
+pallet-elections-phragmen = {default-features = false, version = '2.0.0'}
+pallet-im-online = {default-features = false, version = '2.0.0'}
+pallet-offences = {default-features = false, version = '2.0.0'}
+pallet-session = {default-features = false, version = '2.0.0'}
+pallet-plasm-staking = { path = "../../../frame/plasm-staking", default-features = false }
+pallet-treasury = {default-features = false, version = '2.0.0'}
+sp-authority-discovery = {default-features = false, version = '2.0.0'}
+sp-consensus-babe = {default-features = false, version = '0.8.0'}
+sp-staking = { default-features = false, version = '2.0.0' }
 
 [build-dependencies]
 wasm-builder-runner = { package = "substrate-wasm-builder-runner", version = "1.0.5" }
@@ -116,4 +126,11 @@ std = [
     "pallet-transaction-payment-rpc-runtime-api/std",
     "pallet-utility/std",
     "pallet-ovm/std",
+    "pallet-collective/std",
+    "pallet-offences/std",
+    "pallet-im-online/std",
+    "pallet-treasury/std",
+    "sp-authority-discovery/std",
+    "pallet-authority-discovery/std",
+    "pallet-elections-phragmen/std"
 ]
