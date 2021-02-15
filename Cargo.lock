@@ -4326,7 +4326,7 @@ dependencies = [
  "pallet-balances",
  "pallet-contract-operator",
  "pallet-contracts",
- "pallet-plasm-staking",
+ "pallet-plasm-rewards",
  "pallet-randomness-collective-flip",
  "pallet-session",
  "pallet-staking",
@@ -4591,21 +4591,46 @@ dependencies = [
 ]
 
 [[package]]
-name = "pallet-plasm-staking"
-version = "1.4.0"
+name = "pallet-plasm-rewards"
+version = "1.7.0"
 dependencies = [
+ "frame-support",
+ "frame-system",
+ "hex-literal 0.2.1",
+ "num-traits",
+ "pallet-balances",
+ "pallet-randomness-collective-flip",
+ "pallet-session",
+ "pallet-staking",
+ "pallet-timestamp",
+ "parity-scale-codec",
+ "serde",
+ "sp-arithmetic",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-staking",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-plasm-staking"
+version = "0.1.0"
+dependencies = [
+ "frame-benchmarking",
  "frame-support",
  "frame-system",
  "hex-literal 0.2.1",
  "num-traits",
  "pallet-authorship",
  "pallet-balances",
+ "pallet-plasm-rewards",
  "pallet-randomness-collective-flip",
  "pallet-session",
  "pallet-staking",
- "pallet-staking-reward-curve",
  "pallet-timestamp",
  "parity-scale-codec",
+ "parking_lot 0.11.1",
  "rand_chacha 0.2.2",
  "serde",
  "sp-application-crypto",
@@ -4616,6 +4641,7 @@ dependencies = [
  "sp-runtime",
  "sp-staking",
  "sp-std",
+ "sp-tracing",
  "static_assertions",
  "substrate-test-utils",
 ]
@@ -4706,18 +4732,6 @@ dependencies = [
  "sp-staking",
  "sp-std",
  "static_assertions",
-]
-
-[[package]]
-name = "pallet-staking-reward-curve"
-version = "2.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4155f4dc7306dbcea8cdf54ca18c78c85c6c0f36dc6868a4bab1ac4fd354aa75"
-dependencies = [
- "proc-macro-crate",
- "proc-macro2 1.0.24",
- "quote 1.0.7",
- "syn 1.0.58",
 ]
 
 [[package]]
@@ -5331,6 +5345,7 @@ dependencies = [
  "pallet-operator-trading",
  "pallet-ovm",
  "pallet-plasm-lockdrop",
+ "pallet-plasm-rewards",
  "pallet-plasm-staking",
  "pallet-plasma",
  "pallet-randomness-collective-flip",

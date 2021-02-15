@@ -343,6 +343,18 @@ impl pallet_session::historical::Trait for Runtime {
 	type FullIdentificationOf = pallet_plasm_staking::ExposureOf<Runtime>;
 }
 
+
+impl pallet_plasm_rewards::Trait for Runtime {
+    type Currency = Balances;
+    type UnixTime = Timestamp;
+    type SessionsPerEra = SessionsPerEra;
+    type BondingDuration = BondingDuration;
+    type ComputeEraForDapps = pallet_plasm_rewards::DefaultForDappsStaking<Runtime>;
+    type ComputeEraForSecurity = Staking;
+    type ComputeTotalPayout = pallet_plasm_rewards::inflation::CommunityRewards<u128>;
+    type Event = Event;
+}
+
 parameter_types! {
     pub const SessionsPerEra: pallet_plasm_staking::SessionIndex = 6;
     pub const BondingDuration: pallet_plasm_staking::EraIndex = 24 * 28;
@@ -356,6 +368,8 @@ parameter_types! {
 }
 
 impl pallet_plasm_staking::Trait for Runtime {
+    type ComputeEraParam = u32;
+    type ComputeEra = Staking;
     type Currency = Balances;
     type UnixTime = Timestamp;
     type CurrencyToVote = CurrencyToVoteHandler;
@@ -376,9 +390,6 @@ impl pallet_plasm_staking::Trait for Runtime {
 	type UnsignedPriority = StakingUnsignedPriority;
 	type WeightInfo = pallet_plasm_staking::weights::SubstrateWeight<Runtime>;
     type SessionInterface = Self;
-    type ComputeEraForDapps = pallet_plasm_staking::DefaultForDappsStaking<Runtime>;
-    type ComputeEraForSecurity = pallet_plasm_staking::DefaultForSecurity<Runtime>;
-    type ComputeTotalPayout = pallet_plasm_staking::inflation::CommunityRewards<u128>;
     type Event = Event;
 }
 
@@ -792,6 +803,7 @@ construct_runtime!(
         // Network staking related pallets
         Authorship: pallet_authorship::{Module, Call, Storage, Inherent},
         Staking: pallet_plasm_staking::{Module, Call, Storage, Event<T>, Config<T>},
+        PlasmRewards: pallet_plasm_rewards::{Module, Call, Storage, Event<T>, Config<T>},
         Treasury: pallet_treasury::{Module, Call, Storage, Config, Event<T>},
         Grandpa: pallet_grandpa::{Module, Call, Storage, Config, Event, ValidateUnsigned},
         Babe: pallet_babe::{Module, Call, Storage, Config, Inherent, ValidateUnsigned},

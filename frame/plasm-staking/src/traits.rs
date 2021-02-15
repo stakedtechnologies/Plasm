@@ -8,16 +8,6 @@ pub trait ComputeEraWithParam<EraIndex> {
     fn compute(era: &EraIndex) -> Self::Param;
 }
 
-pub struct DefaultForDappsStaking<T: Trait> {
-    _phantom: PhantomData<T>,
-}
-impl<T: Trait> ComputeEraWithParam<EraIndex> for DefaultForDappsStaking<T> {
-    type Param = BalanceOf<T>;
-    fn compute(_era: &EraIndex) -> BalanceOf<T> {
-        0.into()
-    }
-}
-
 pub struct DefaultForSecurity<T: Trait> {
     _phantom: PhantomData<T>,
 }
@@ -26,51 +16,4 @@ impl<T: Trait> ComputeEraWithParam<EraIndex> for DefaultForSecurity<T> {
     fn compute(era: &EraIndex) -> BalanceOf<T> {
         BalanceOf::<T>::from(T::SessionInterface::validators().len().try_into().unwrap_or(0u32))
     }
-}
-
-/// The reward is allocated from the total supply of tokens,
-/// the time for Era, the amount of staking for Security, and the amount of staking for Dapps.
-pub trait ComputeTotalPayout<ValidatorParam, DappsParam> {
-    fn compute<N, M>(
-        total_tokens: N,
-        era_duration: M,
-        for_security_parm: ValidatorParam,
-        for_dapps_param: DappsParam,
-    ) -> (N, N)
-    where
-        N: BaseArithmetic + num_traits::sign::Unsigned + Clone + From<u32>,
-        M: BaseArithmetic + Clone + From<u32>;
-}
-
-/// Get the era for validator and dapps staking module.
-pub trait EraFinder<EraIndex, SessionIndex> {
-    /// The current era index.
-    ///
-    /// This is the latest planned era, depending on how session module queues the validator
-    /// set, it might be active or not.
-    fn current() -> Option<EraIndex>;
-
-    /// The active era information, it holds index and start.
-    ///
-    /// The active era is the era currently rewarded.
-    /// Validator set of this era must be equal to `SessionInterface::validators`.
-    fn active() -> Option<ActiveEraInfo>;
-
-    /// The session index at which the era start for the last `HISTORY_DEPTH` eras
-    fn start_session_index(era: &EraIndex) -> Option<SessionIndex>;
-}
-
-/// Get the security rewards for validator module.
-pub trait ForSecurityEraRewardFinder<Balance> {
-    fn get(era: &EraIndex) -> Option<Balance>;
-}
-
-/// Get the dapps rewards for dapps staking module.
-pub trait ForDappsEraRewardFinder<Balance> {
-    fn get(era: &EraIndex) -> Option<Balance>;
-}
-
-/// Get the history depth
-pub trait HistoryDepthFinder {
-    fn get() -> u32;
 }

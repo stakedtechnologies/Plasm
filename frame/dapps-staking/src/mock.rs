@@ -279,8 +279,24 @@ impl MaybeValidators<EraIndex, AccountId> for DummyMaybeValidators {
 }
 
 parameter_types! {
-    pub const SessionsPerEra: sp_staking::SessionIndex = 10;
-    pub const BondingDuration: EraIndex = 3;
+    pub const DappBondingDuration: pallet_plasm_rewards::EraIndex = 24 * 28;
+}
+
+impl pallet_plasm_rewards::Trait for Runtime {
+    type Currency = Balances;
+    type Time = Timestamp;
+    type SessionsPerEra = SessionsPerEra;
+    type BondingDuration = BondingDuration;
+    type ComputeEraForDapps = pallet_plasm_rewards::DefaultForDappsStaking<Runtime>;
+    type ComputeEraForSecurity = Staking;
+    type ComputeTotalPayout = pallet_plasm_rewards::inflation::CommunityRewards<u32>;
+    type MaybeValidators = PlasmValidator;
+    type Event = Event;
+}
+
+parameter_types! {
+    pub const SessionsPerEra: sp_staking::SessionIndex = 6;
+    pub const SecurityBondingDuration: EraIndex = 3;
 }
 
 impl pallet_plasm_staking::Trait for Test {

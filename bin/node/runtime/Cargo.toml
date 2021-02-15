@@ -66,6 +66,7 @@ pallet-im-online = {default-features = false, version = '2.0.0'}
 pallet-offences = {default-features = false, version = '2.0.0'}
 pallet-session = {default-features = false, version = '2.0.0'}
 pallet-plasm-staking = { path = "../../../frame/plasm-staking", default-features = false }
+pallet-plasm-rewards = { path = "../../../frame/plasm-rewards", default-features = false }
 pallet-treasury = {default-features = false, version = '2.0.0'}
 sp-authority-discovery = {default-features = false, version = '2.0.0'}
 sp-consensus-babe = {default-features = false, version = '0.8.0'}
@@ -130,6 +131,7 @@ std = [
     "pallet-offences/std",
     "pallet-im-online/std",
     "pallet-treasury/std",
+    "pallet-plasm-rewards/std",
     "sp-authority-discovery/std",
     "pallet-authority-discovery/std",
     "pallet-elections-phragmen/std"

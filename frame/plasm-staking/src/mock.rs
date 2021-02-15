@@ -277,19 +277,9 @@ impl pallet_timestamp::Trait for Test {
 	type MinimumPeriod = MinimumPeriod;
 	type WeightInfo = ();
 }
-pallet_staking_reward_curve::build! {
-	const I_NPOS: PiecewiseLinear<'static> = curve!(
-		min_inflation: 0_025_000,
-		max_inflation: 0_100_000,
-		ideal_stake: 0_500_000,
-		falloff: 0_050_000,
-		max_piece_count: 40,
-		test_precision: 0_005_000,
-	);
-}
+
 parameter_types! {
 	pub const BondingDuration: EraIndex = 3;
-	pub const RewardCurve: &'static PiecewiseLinear<'static> = &I_NPOS;
 	pub const MaxNominatorRewardedPerValidator: u32 = 64;
 	pub const UnsignedPriority: u64 = 1 << 20;
 	pub const MinSolutionScoreBump: Perbill = Perbill::zero();
@@ -327,9 +317,6 @@ impl ComputeEraWithParam<EraIndex> for DummyForDappsStaking {
 }
 
 impl Trait for Test {
-    type ComputeEraForDapps = DummyForDappsStaking;
-    type ComputeEraForSecurity = DummyForSecurityStaking;
-    type ComputeTotalPayout = inflation::MaintainRatioComputeTotalPayout<Balance>;
 	type Currency = Balances;
 	type UnixTime = Timestamp;
 	type CurrencyToVote = CurrencyToVoteHandler;
@@ -342,7 +329,6 @@ impl Trait for Test {
 	type SlashCancelOrigin = frame_system::EnsureRoot<Self::AccountId>;
 	type BondingDuration = BondingDuration;
 	type SessionInterface = Self;
-	type RewardCurve = RewardCurve;
 	type NextNewSession = Session;
 	type ElectionLookahead = ElectionLookahead;
 	type Call = Call;
@@ -731,14 +717,6 @@ pub(crate) fn start_era(era_index: EraIndex) {
 	assert_eq!(Staking::active_era().unwrap().index, era_index);
 }
 
-pub(crate) fn current_total_payout_for_duration(duration: u64) -> Balance {
-	inflation::compute_total_payout(
-		<Test as Trait>::RewardCurve::get(),
-		Staking::eras_total_stake(Staking::active_era().unwrap().index),
-		Balances::total_issuance(),
-		duration,
-	).0
-}
 
 pub(crate) fn reward_all_elected() {
 	let rewards = <Test as Trait>::SessionInterface::validators()

@@ -278,11 +278,12 @@ pub mod benchmarking;
 
 pub mod slashing;
 pub mod offchain_election;
-pub mod inflation;
 pub mod weights;
 pub use weights::WeightInfo;
 pub mod traits;
 pub use traits::*;
+mod compute_era;
+pub use compute_era::*;
 
 use sp_std::{
 	result,
@@ -772,16 +773,11 @@ impl<T: Trait> SessionInterface<<T as frame_system::Trait>::AccountId> for T whe
 }
 pub trait Trait: pallet_session::Trait + SendTransactionTypes<Call<Self>> {
 
-	/// Get the amount of staking for dapps per era.
-	type ComputeEraForDapps: ComputeEraWithParam<EraIndex>;
+	/// The return type of ComputeEraWithParam.
+    type ComputeEraParam;
 
-	/// Get the amount of staking for security per era.
-	type ComputeEraForSecurity: ComputeEraWithParam<EraIndex>;
-
-	/// How to compute total issue PLM for rewards.
-	 type ComputeTotalPayout: ComputeTotalPayout<
-		<Self::ComputeEraForSecurity as ComputeEraWithParam<EraIndex>>::Param,
-		<Self::ComputeEraForDapps as ComputeEraWithParam<EraIndex>>::Param,>;
+    /// Acutually computing of ComputeEraWithParam.
+    type ComputeEra: ComputeEraOnModule<Self::ComputeEraParam>;
 
 	/// The staking balance.
 	type Currency: LockableCurrency<Self::AccountId, Moment=Self::BlockNumber>;
@@ -2677,29 +2673,15 @@ impl<T: Trait> Module<T> {
 	/// Compute payout for era.
 	fn end_era(active_era: ActiveEraInfo, _session_index: SessionIndex) {
 		// Note: active_era_start can be None if end era is called during genesis config.
-        if let Some(active_era_start) = active_era.start {
-            // The set of total amount of staking.
+		if let Some(active_era_start) = active_era.start {
 			let now_as_millis_u64 = T::UnixTime::now().as_millis().saturated_into::<u64>();
 
-			let era_duration = now_as_millis_u64 - active_era_start;
-
-            if era_duration != 0 {
-                let total_payout = T::Currency::total_issuance();
-                let for_dapps = T::ComputeEraForDapps::compute(&active_era.index);
-                let for_security = T::ComputeEraForSecurity::compute(&active_era.index);
-
-                let (for_security_reward, for_dapps_rewards) = T::ComputeTotalPayout::compute(
-                    total_payout,
-                    era_duration,
-                    for_security,
-                    for_dapps,
-                );
-
-                <ForSecurityEraReward<T>>::insert(active_era.index, for_security_reward);
-                <ForDappsEraReward<T>>::insert(active_era.index, for_dapps_rewards);
-            }
-        }
+			// TODO: Get validator payout recorded by plasm_rewards module and diplay results
+			
+		}
 	}
+
+	fn set_total_reward() {}
 
 	/// Plan a new era. Return the potential new staking set.
 	fn new_era(start_session_index: SessionIndex) -> Option<Vec<T::AccountId>> {
@@ -2972,8 +2954,6 @@ impl<T: Trait> Module<T> {
 		<ErasRewardPoints<T>>::remove(era_index);
 		<ErasTotalStake<T>>::remove(era_index);
 		ErasStartSessionIndex::remove(era_index);
-		<ForDappsEraReward<T>>::remove(era_index);
-        <ForSecurityEraReward<T>>::remove(era_index);
 	}
 
 	/// Apply previously-unapplied slashes on the beginning of a new era, after a delay.
@@ -3403,6 +3383,11 @@ fn to_invalid(error_with_post_info: DispatchErrorWithPostInfo) -> InvalidTransac
 	InvalidTransaction::Custom(error_number)
 }
 
+use pallet_plasm_rewards::{
+	ActiveEraInfo,
+    traits::{ComputeEraWithParam, EraFinder},
+    EraIndex,
+};
 
 /// In this implementation using validator and dapps rewards module.
 impl<T: Trait> EraFinder<EraIndex, SessionIndex> for Module<T> {
@@ -3417,23 +3402,11 @@ impl<T: Trait> EraFinder<EraIndex, SessionIndex> for Module<T> {
     }
 }
 
-/// Get the security rewards for validator module.
-impl<T: Trait> ForSecurityEraRewardFinder<BalanceOf<T>> for Module<T> {
-    fn get(era: &EraIndex) -> Option<BalanceOf<T>> {
-        Self::for_security_era_reward(&era)
-    }
-}
-
-/// Get the dapps rewards for dapps staking module.
-impl<T: Trait> ForDappsEraRewardFinder<BalanceOf<T>> for Module<T> {
-    fn get(era: &EraIndex) -> Option<BalanceOf<T>> {
-        Self::for_dapps_era_reward(&era)
-    }
-}
-
-/// Get the history depth
-impl<T: Trait> HistoryDepthFinder for Module<T> {
-    fn get() -> u32 {
-        Self::history_depth()
+/// Get the amount of staking per Era in a module in the Plasm Network
+/// for callinng by plasm-rewards when end era.
+impl<T: Trait> ComputeEraWithParam<EraIndex> for Module<T> {
+    type Param = T::ComputeEraParam;
+    fn compute(era: &EraIndex) -> T::ComputeEraParam {
+        T::ComputeEra::compute(era)
     }
 }

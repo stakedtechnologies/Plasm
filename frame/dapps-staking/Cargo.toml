@@ -28,7 +28,7 @@ pallet-staking = { version = "2.0.0", default_features = false }
 sp-staking = { version = "2.0.0", default_features = false }
 
 pallet-contract-operator = { path = "../operator", version = "1.4.0", default_features = false }
-pallet-plasm-staking = { path = "../plasm-staking", version = "1.4.0", default_features = false }
+pallet-plasm-rewards = { path = "../plasm-rewards", version = "1.7.0", default_features = false }
 
 [dev-dependencies]
 wabt = "0.10.0"
@@ -56,6 +56,6 @@ std = [
     "pallet-contracts/std",
     "pallet-staking/std",
     "pallet-contract-operator/std",
-    "pallet-plasm-staking/std",
+    "pallet-plasm-rewards/std",
     "sp-staking/std",
 ]
