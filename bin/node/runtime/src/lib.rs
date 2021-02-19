@@ -799,7 +799,7 @@ construct_runtime!(
 
         // Network staking related pallets
         Authorship: pallet_authorship::{Module, Call, Storage, Inherent},
-        PlasmRewards: pallet_plasm_rewards::{Module, Call, Storage, Event<T>, Config},
+        PlasmRewards: pallet_plasm_rewards::{Module, Call, Storage, Event<T>},
         Staking: pallet_plasm_staking::{Module, Call, Storage, Event<T>, Config<T>},
         Treasury: pallet_treasury::{Module, Call, Storage, Config, Event<T>},
         Grandpa: pallet_grandpa::{Module, Call, Storage, Config, Event, ValidateUnsigned},
