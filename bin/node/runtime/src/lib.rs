@@ -269,9 +269,17 @@ impl pallet_dapps_staking::Trait for Runtime {
     type Reward = (); // Reward is minted.
     type UnixTime = Timestamp;
     type ComputeRewardsForDapps = pallet_dapps_staking::rewards::VoidableRewardsForDapps;
-    type EraFinder = Staking;
-    type ForDappsEraReward = Staking;
-    type HistoryDepthFinder = Staking;
+    type EraFinder = PlasmRewards;
+    type ForDappsEraReward = PlasmRewards;
+    type HistoryDepthFinder = PlasmRewards;
+    type Event = Event;
+}
+
+impl pallet_plasm_rewards::Trait for Runtime {
+    type Currency = Balances;
+    type UnixTime = Timestamp;
+    type SessionsPerEra = SessionsPerEra;
+    type BondingDuration = BondingDuration;
     type Event = Event;
 }
 
@@ -791,6 +799,7 @@ construct_runtime!(
 
         // Network staking related pallets
         Authorship: pallet_authorship::{Module, Call, Storage, Inherent},
+        PlasmRewards: pallet_plasm_rewards::{Module, Call, Storage, Event<T>, Config},
         Staking: pallet_plasm_staking::{Module, Call, Storage, Event<T>, Config<T>},
         Treasury: pallet_treasury::{Module, Call, Storage, Config, Event<T>},
         Grandpa: pallet_grandpa::{Module, Call, Storage, Config, Event, ValidateUnsigned},

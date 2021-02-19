@@ -3437,3 +3437,19 @@ impl<T: Trait> HistoryDepthFinder for Module<T> {
         Self::history_depth()
     }
 }
+
+/*
+pub trait ValidatorStatus<BalanceOf> {
+	
+	fn set_total_rewards(index: &u32, reward: BalanceOf);
+}
+
+
+
+impl<T: Trait> ValidatorStatus<BalanceOf<T>> for Module<T> {
+	fn set_total_rewards(index: &u32, reward: BalanceOf<T>) {
+
+		<ErasValidatorReward<T>>::insert(*index as EraIndex, reward);
+	}
+}
+*/

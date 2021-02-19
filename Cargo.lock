@@ -4326,7 +4326,7 @@ dependencies = [
  "pallet-balances",
  "pallet-contract-operator",
  "pallet-contracts",
- "pallet-plasm-staking",
+ "pallet-plasm-rewards",
  "pallet-randomness-collective-flip",
  "pallet-session",
  "pallet-staking",
@@ -4591,6 +4591,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-plasm-rewards"
+version = "1.7.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "hex-literal 0.2.1",
+ "num-traits",
+ "pallet-balances",
+ "pallet-plasm-staking",
+ "pallet-randomness-collective-flip",
+ "pallet-session",
+ "pallet-timestamp",
+ "parity-scale-codec",
+ "serde",
+ "sp-arithmetic",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-staking",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-plasm-staking"
 version = "1.4.0"
 dependencies = [
@@ -4618,6 +4641,28 @@ dependencies = [
  "sp-std",
  "static_assertions",
  "substrate-test-utils",
+]
+
+[[package]]
+name = "pallet-plasm-validator"
+version = "1.7.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "hex-literal 0.2.1",
+ "pallet-balances",
+ "pallet-plasm-rewards",
+ "pallet-randomness-collective-flip",
+ "pallet-session",
+ "pallet-timestamp",
+ "parity-scale-codec",
+ "serde",
+ "sp-arithmetic",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-staking",
+ "sp-std",
 ]
 
 [[package]]
@@ -5331,7 +5376,9 @@ dependencies = [
  "pallet-operator-trading",
  "pallet-ovm",
  "pallet-plasm-lockdrop",
+ "pallet-plasm-rewards",
  "pallet-plasm-staking",
+ "pallet-plasm-validator",
  "pallet-plasma",
  "pallet-randomness-collective-flip",
  "pallet-session",

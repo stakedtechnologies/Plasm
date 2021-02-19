@@ -17,7 +17,7 @@ use frame_support::{
 };
 use frame_system::{self as system, ensure_signed};
 use pallet_contract_operator::ContractFinder;
-use pallet_plasm_staking::{
+use pallet_plasm_rewards::{
     traits::{ComputeEraWithParam, EraFinder, ForDappsEraRewardFinder, HistoryDepthFinder},
     EraIndex, Releases,
 };

@@ -30,6 +30,8 @@ sp-session = { version = "2.0.0", default-features = false }
 # frame dependencies
 pallet-contract-operator = { path = "../../../frame/operator", default-features = false }
 pallet-operator-trading = { path = "../../../frame/trading", default-features = false }
+pallet-plasm-rewards = { path = "../../../frame/plasm-rewards", default-features = false }
+pallet-plasm-validator = { path = "../../../frame/plasm-validator", default-features = false }
 pallet-dapps-staking = { path = "../../../frame/dapps-staking", default-features = false }
 pallet-plasm-lockdrop = { path = "../../../frame/plasm-lockdrop", default-features = false }
 pallet-ovm = { path = "../../../frame/ovm", default-features = false }
@@ -132,5 +134,6 @@ std = [
     "pallet-treasury/std",
     "sp-authority-discovery/std",
     "pallet-authority-discovery/std",
-    "pallet-elections-phragmen/std"
+    "pallet-elections-phragmen/std",
+    "pallet-plasm-rewards/std"
 ]
