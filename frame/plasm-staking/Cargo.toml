@@ -22,7 +22,6 @@ frame-support = { version = "2.0.0", default_features = false }
 pallet-session = { version = "2.0.0", default-features = false }
 pallet-authorship = { version = "2.0.0", default_features = false }
 frame-system = { version = "2.0.0", default_features = false }
-pallet-staking = { version = "2.0.0", default_features = false }
 sp-staking = { version = "2.0.0", default_features = false }
 rand_chacha = {version = "0.2", default_features = false }
 sp-application-crypto = { version="2.0.0", default_features = false }
@@ -53,8 +52,7 @@ std = [
     "frame-support/std", 
     "sp-runtime/std", 
     "sp-staking/std", 
-    "pallet-session/std", 
-    "pallet-staking/std",
+    "pallet-session/std",
     "frame-system/std", 
     "pallet-authorship/std", 
     "sp-application-crypto/std",
