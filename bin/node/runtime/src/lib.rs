@@ -316,7 +316,6 @@ impl pallet_plasm_validator::Config for Runtime {
     type Event = Event;
 }
 
-/*
 impl pallet_dapps_staking::Config for Runtime {
     type Currency = Balances;
     type BondingDuration = BondingDuration;
@@ -330,7 +329,6 @@ impl pallet_dapps_staking::Config for Runtime {
     type HistoryDepthFinder = PlasmRewards;
     type Event = Event;
 }
-*/
 
 parameter_types! {
     pub const TombstoneDeposit: Balance = deposit(
@@ -377,15 +375,15 @@ impl pallet_contracts::Config for Runtime {
     type ChainExtension = ();
     type DeletionQueueDepth = DeletionQueueDepth;
     type DeletionWeightLimit = DeletionWeightLimit;
-    type MaxCodeSize = MaxCodeSize;
+    type DetermineContractAddress = pallet_contracts::SimpleAddressDeterminer<Runtime>;
 }
 
-/*
 impl pallet_contract_operator::Config for Runtime {
     type Parameters = pallet_dapps_staking::parameters::StakingParameters;
     type Event = Event;
 }
 
+/*
 impl pallet_operator_trading::Config for Runtime {
     type Currency = Balances;
     type OperatorFinder = Operator;
@@ -702,7 +700,7 @@ construct_runtime!(
         Indices: pallet_indices::{Module, Call, Storage, Event<T>, Config<T>},
         Balances: pallet_balances::{Module, Call, Storage, Event<T>, Config<T>},
         Contracts: pallet_contracts::{Module, Call, Storage, Event<T>, Config<T>},
-        //DappsStaking: pallet_dapps_staking::{Module, Call, Storage, Event<T>},
+        DappsStaking: pallet_dapps_staking::{Module, Call, Storage, Event<T>},
         PlasmValidator: pallet_plasm_validator::{Module, Call, Storage, Event<T>, Config<T>},
         PlasmRewards: pallet_plasm_rewards::{Module, Call, Storage, Event<T>, Config},
         Session: pallet_session::{Module, Call, Storage, Event, Config<T>},
@@ -711,7 +709,7 @@ construct_runtime!(
         Grandpa: pallet_grandpa::{Module, Call, Storage, Config, Event, ValidateUnsigned},
         ImOnline: pallet_im_online::{Module, Call, Storage, Event<T>, ValidateUnsigned, Config<T>},
         Offences: pallet_offences::{Module, Call, Storage, Event},
-        //Operator: pallet_contract_operator::{Module, Call, Storage, Event<T>},
+        Operator: pallet_contract_operator::{Module, Call, Storage, Event<T>},
         //Trading: pallet_operator_trading::{Module, Call, Storage, Event<T>},
         RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Module, Call, Storage},
         Sudo: pallet_sudo::{Module, Call, Storage, Event<T>, Config<T>},
